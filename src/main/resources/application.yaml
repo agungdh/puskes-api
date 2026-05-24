@@ -10,7 +10,9 @@ spring:
     password: admin
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
+    flyway:
+      enabled: false
   data:
     redis:
       host: localhost

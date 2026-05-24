@@ -1,0 +1,8 @@
+spring:
+  main:
+    web-application-type: none
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: none
