@@ -9,9 +9,8 @@
 - **SpringDoc OpenAPI** v3.0.2 — Swagger UI at `/swagger-ui.html` (whitelisted in SecurityConfig).
 
 ## Runtime dependencies
-- **PostgreSQL**, **Redis** (ValKey in docker-compose), and **MinIO** must be running, even for `@SpringBootTest` context-load tests.
+- **PostgreSQL**, **Redis** (ValKey in docker-compose), and **MinIO** must be running.
   - Use `docker compose up -d` to start them all.
-  - Migrate tests to `@DataJpaTest` / `@WebMvcTest` slices (or use testcontainers) to avoid this.
 
 ## Database & Migrations (Flyway)
 - Schema managed by Flyway, **not** Hibernate. `ddl-auto` is `validate`.
@@ -39,6 +38,28 @@ All source lives under `src/main/java/id/my/agungdh/puskes/`.
 ## Commands
 ```bash
 ./mvnw spring-boot:run
-./mvnw test
-./mvnw test -Dtest=SomeTestClass
 ```
+
+## Entity conventions
+Every entity must have these audit columns (all nullable):
+
+| Column         | Type      | Description                  |
+|---------------|-----------|------------------------------|
+| `created_at`  | `BIGINT`  | Unix epoch (seconds)         |
+| `updated_at`  | `BIGINT`  | Unix epoch (seconds)         |
+| `deleted_at`  | `BIGINT`  | Unix epoch (seconds) — soft delete |
+| `created_by`  | `VARCHAR` | Username who created         |
+| `updated_by`  | `VARCHAR` | Username who last updated    |
+| `deleted_by`  | `VARCHAR` | Username who deleted         |
+
+- Soft delete: never hard-delete rows; set `deleted_at` instead.
+- **Partial unique indexes**: unique constraints only apply when `deleted_at IS NULL`. For example, a `UNIQUE (email) WHERE deleted_at IS NULL`.
+
+## ID conventions
+- **Internal**: `SERIAL` (PostgreSQL-only). Used for PK and FK relationships. **Never exposed to clients.**
+- **External**: `UUID` v4 with a hash index. Exposed in API responses / DTOs. Generated via `gen_random_uuid()` in PostgreSQL, or `UUID.randomUUID()` in Java.
+
+## DTO conventions
+- DTOs use Java **records**, not classes.
+- Use **MapStruct** mappers for entity ↔ DTO conversions.
+- Place mappers in `mapper/` package (e.g. `id.my.agungdh.puskes.mapper`).
