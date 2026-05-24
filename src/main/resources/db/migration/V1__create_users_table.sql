@@ -14,5 +14,6 @@ CREATE TABLE users (
     deleted_by VARCHAR(255)
 );
 
+CREATE INDEX idx_users_uuid ON users USING hash (uuid);
 CREATE UNIQUE INDEX idx_users_username ON users (username) WHERE deleted_at IS NULL;
 CREATE UNIQUE INDEX idx_users_email ON users (email) WHERE deleted_at IS NULL;

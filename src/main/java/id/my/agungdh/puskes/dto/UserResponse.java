@@ -9,7 +9,5 @@ public record UserResponse(
         String username,
         String email,
         String name,
-        Role role,
-        Long createdAt,
-        Long updatedAt
+        Role role
 ) {}
