@@ -1,6 +1,7 @@
 package id.my.agungdh.puskes;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ public class MigratorRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        context.close();
+        int exitCode = SpringApplication.exit(context, () -> 0);
+        System.exit(exitCode);
     }
 }
