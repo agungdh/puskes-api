@@ -11,8 +11,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    flyway:
-      enabled: false
+  flyway:
+    enabled: false
   data:
     redis:
       host: localhost
